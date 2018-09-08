@@ -26,8 +26,15 @@ class App extends React.Component {
                         </Title>
                         <Box flex={true} justify="end" direction="row" responsive={false}>
                             <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
-                                <Anchor href="#">Create Issuance Order</Anchor>
-                                <Anchor href="#">See All Orders</Anchor>
+                                <Anchor>
+                                    <Link to="orders">See Your Orders</Link>
+                                </Anchor>
+                                <Anchor>
+                                    <Link to="orderbook">See All Orders</Link>
+                                </Anchor>
+                                <Anchor>
+                                    <Link to="/">See Token Sets</Link>
+                                </Anchor>
                             </Menu>
                         </Box>
                     </Header>
