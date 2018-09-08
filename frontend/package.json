@@ -19,8 +19,7 @@
     },
     "scripts": {
         "start": "react-scripts-ts start",
-        "build": "react-scripts-ts build",
-        "test": "react-scripts-ts test --env=jsdom",
+        "build": "react-scripts-ts --max_old_space_size=4096 build",
         "eject": "react-scripts-ts eject",
         "discharge": "discharge",
         "lint": "tslint --format stylish 'src/*.ts' 'src/*.tsx'"
