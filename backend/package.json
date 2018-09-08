@@ -18,11 +18,7 @@
     "author": "Brandon Millman",
     "license": "MIT",
     "dependencies": {
-        "@0xproject/typescript-typings": "^2.0.0",
         "body-parser": "^1.17.1",
-        "ethereum-types": "^1.0.6",
-        "ethereumjs-tx": "^1.3.5",
-        "ethereumjs-util": "^5.1.1",
         "express": "^4.15.2",
         "lodash": "^4.17.5"
     },
