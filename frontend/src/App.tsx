@@ -50,7 +50,7 @@ class App extends React.Component {
                     <Footer justify="between">
                         <Title />
                         <Box direction="row" align="center" pad={{ between: 'medium' }}>
-                            <Paragraph margin="none">© 2018 0x Project</Paragraph>
+                            <Paragraph margin="none">© 2018 Bündler</Paragraph>
                             <Menu direction="row" size="small" dropAlign={{ right: 'right' }}>
                                 <Anchor href="#">About</Anchor>
                                 <Anchor href="#">FAQ</Anchor>
