@@ -158,7 +158,7 @@ export const sets = [
     {
         id: 'stbl',
         // Kovan address actually deployed
-        address: '0x2c58a14de96b522502857818e4dcc9b07a3993c4',
+        address: '0x2c58A14DE96B522502857818e4dcC9b07a3993C4',
         name: 'StableSet',
         symbol: 'STBL',
         description:
@@ -176,7 +176,7 @@ export const sets = [
                 symbol: 'TUSD',
                 decimals: 18,
                 image: 'https://s3.amazonaws.com/set-core/img/coin-icons/tusd.svg',
-                address: '0x8dd5fbce2f6a956c3022ba3663759011dd51e73e',
+                address: '0xaeb5ddbeb7f855aa44a40b0d17c742031642414b',
                 percent_of_set: '50.09',
                 price_eth: '0.00464349376114082',
                 price_usd: '1.006260963',
@@ -190,7 +190,7 @@ export const sets = [
                 symbol: 'DAI',
                 decimals: 18,
                 image: 'https://s3.amazonaws.com/set-core/img/coin-icons/dai.svg',
-                address: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+                address: '0xd215299202a513afec26b1e0cad1606eee3e149d',
                 percent_of_set: '49.91',
                 price_eth: '0.004627381454911273',
                 price_usd: '1.000602688919796',

@@ -44,6 +44,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
         );
     }
     handleFormSubmit = async (issuanceOrder: IssuanceOrder): Promise<void> => {
+        console.log(issuanceOrder);
         const {
             setAddress,
             quantity,
@@ -78,6 +79,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
             );
             // TODO: Send SignedIssuanceOrder
         } catch (e) {
+            console.log(e);
             this.setState({ errorMessage: e.message });
         } finally {
             this.setState({ isLoading: false });

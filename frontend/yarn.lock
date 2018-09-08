@@ -257,6 +257,12 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@babel/runtime@^7.0.0-rc.1":
+  version "7.0.0"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.0.0.tgz#adeb78fedfc855aa05bc041640f3f6f98e85424c"
+  dependencies:
+    regenerator-runtime "^0.12.0"
+
 "@ledgerhq/hw-app-eth@^4.3.0":
   version "4.21.0"
   resolved "https://registry.npmjs.org/@ledgerhq/hw-app-eth/-/hw-app-eth-4.21.0.tgz#2d8bfbe5f09b92e8d6951ae685036d9d5aea96ff"
@@ -2201,7 +2207,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.3:
+classnames@^2.2.3, classnames@^2.2.5:
   version "2.2.6"
   resolved "https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
 
@@ -6056,6 +6062,10 @@ keccakjs@^0.2.0, keccakjs@^0.2.1:
     browserify-sha3 "^0.0.1"
     sha3 "^1.1.0"
 
+keyboard-key@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/keyboard-key/-/keyboard-key-1.0.2.tgz#212e14dde4c2059814336159bbc5acd0a348ca6b"
+
 killable@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/killable/-/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
@@ -8353,6 +8363,10 @@ regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
 
+regenerator-runtime@^0.12.0:
+  version "0.12.1"
+  resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
+
 regenerator-transform@^0.10.0:
   version "0.10.1"
   resolved "https://registry.npmjs.org/regenerator-transform/-/regenerator-transform-0.10.1.tgz#1e4996837231da8b7f3cf4114d71b5691a0680dd"
@@ -8768,6 +8782,17 @@ selfsigned@^1.9.1:
   dependencies:
     node-forge "0.7.5"
 
+semantic-ui-react@^0.82.3:
+  version "0.82.3"
+  resolved "https://registry.npmjs.org/semantic-ui-react/-/semantic-ui-react-0.82.3.tgz#b7940c2344a1b9b12659b284e00baf907186b724"
+  dependencies:
+    "@babel/runtime" "^7.0.0-rc.1"
+    classnames "^2.2.5"
+    keyboard-key "^1.0.1"
+    lodash "^4.17.10"
+    prop-types "^15.6.1"
+    shallowequal "^1.0.2"
+
 semaphore-async-await@^1.5.1:
   version "1.5.1"
   resolved "https://registry.npmjs.org/semaphore-async-await/-/semaphore-async-await-1.5.1.tgz#857bef5e3644601ca4b9570b87e9df5ca12974fa"
@@ -8979,6 +9004,10 @@ sha3@^1.1.0:
   resolved "https://registry.npmjs.org/sha3/-/sha3-1.2.2.tgz#a66c5098de4c25bc88336ec8b4817d005bca7ba9"
   dependencies:
     nan "2.10.0"
+
+shallowequal@^1.0.2:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
 
 shebang-command@^1.2.0:
   version "1.2.0"

@@ -14,6 +14,7 @@ import Title from 'grommet/components/Title';
 
 import SetSelectionPage from './SetSelectionPage';
 import IssueSetPage from './IssueSetPage';
+import OTCApp from './OTCApp';
 
 class App extends React.Component {
     public render() {
@@ -41,6 +42,7 @@ class App extends React.Component {
                     <Section margin={{ vertical: 'large' }}>
                         <Route exact={true} path="/" component={SetSelectionPage} />
                         <Route path="/issue/:setId" component={IssueSetPage} />
+                        <Route path="/otc" component={OTCApp} />
                     </Section>
                     <Footer justify="between">
                         <Title />
