@@ -2,6 +2,7 @@ import { assetDataUtils, marketUtils, sortingUtils } from '@0xproject/order-util
 import { BigNumber } from '@0xproject/utils';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
+import wrap = require('express-async-wrap');
 import * as _ from 'lodash';
 
 import { constants } from './constants';
@@ -56,7 +57,8 @@ app.get('/quote', async (req: express.Request, res: express.Response) => {
      * makerTokenAmount -> string
      */
     const setProtocol = setProtocolFactory.createSetProtocol();
-    const components = await setProtocol.setToken.getComponentsAsync(req.params.setAddress);
+    const components = await setProtocol.setToken.getComponentsAsync(req.query.setAddress);
+    console.log(components);
     const tokenAssetDatas = _.map(components, address => assetDataUtils.encodeERC20AssetData(address));
     const orderbookRequests = _.map(tokenAssetDatas, assetData => {
         return {
@@ -67,8 +69,8 @@ app.get('/quote', async (req: express.Request, res: express.Response) => {
     const zeroExService = new ZeroExOrderService();
     const orderbooks = await Promise.all(_.map(orderbookRequests, request => zeroExService.getOrderbookAsync(request)));
     const asksList = _.map(orderbooks, orderbook => sortingUtils.sortOrdersByFeeAdjustedRate(orderbook.asks));
-    const units = await setProtocol.setToken.getUnitsAsync(req.params.setAddress);
-    const quantity = new BigNumber(req.params.quantity);
+    const units = await setProtocol.setToken.getUnitsAsync(req.query.setAddress);
+    const quantity = new BigNumber(req.query.quantity);
     const requiredAmounts = _.map(units, unit => unit.mul(quantity).mul(BUFFER_MULTIPLIER));
     const targetOrdersArray = _.map(asksList, (asks, index) => {
         const requiredAmount = requiredAmounts[index];
