@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "0x.js": "^1.0.1",
+    "@0xproject/typescript-typings": "^2.0.0",
+    "@0xproject/web3-wrapper": "^2.0.2",
     "bignumber.js": "^4.1.0",
     "grommet": "^1.11.0",
     "react": "^16.5.0",

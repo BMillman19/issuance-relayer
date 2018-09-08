@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 import Anchor from 'grommet/components/Anchor';
 import Layout from 'grommet/components/App';
@@ -18,36 +18,36 @@ import IssueSetPage from './IssueSetPage';
 class App extends React.Component {
     public render() {
         return (
-            <Layout>
-                <Header fixed={false} float={false} size="large" splash={false}>
-                    <Title>Issuance Relayer</Title>
-                    <Box flex={true} justify="end" direction="row" responsive={false}>
-                        <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
-                            <Anchor href="#">Create Issuance Order</Anchor>
-                            <Anchor href="#">See All Orders</Anchor>
-                        </Menu>
-                    </Box>
-                </Header>
-                <Section margin={{ vertical: 'large' }}>
-                    <BrowserRouter>
-                        <div>
-                            <Route exact={true} path="/" component={SetSelectionPage} />
-                            <Route path="/issue/:setId" component={IssueSetPage} />
-                        </div>
-                    </BrowserRouter>
-                </Section>
-                <Footer justify="between">
-                    <Title />
-                    <Box direction="row" align="center" pad={{ between: 'medium' }}>
-                        <Paragraph margin="none">© 2018 0x Project</Paragraph>
-                        <Menu direction="row" size="small" dropAlign={{ right: 'right' }}>
-                            <Anchor href="#">About</Anchor>
-                            <Anchor href="#">FAQ</Anchor>
-                            <Anchor href="#">Contact</Anchor>
-                        </Menu>
-                    </Box>
-                </Footer>
-            </Layout>
+            <BrowserRouter>
+                <Layout>
+                    <Header fixed={false} float={false} size="large" splash={false}>
+                        <Title>
+                            <Link to="/">Issuance Relayer </Link>
+                        </Title>
+                        <Box flex={true} justify="end" direction="row" responsive={false}>
+                            <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
+                                <Anchor href="#">Create Issuance Order</Anchor>
+                                <Anchor href="#">See All Orders</Anchor>
+                            </Menu>
+                        </Box>
+                    </Header>
+                    <Section margin={{ vertical: 'large' }}>
+                        <Route exact={true} path="/" component={SetSelectionPage} />
+                        <Route path="/issue/:setId" component={IssueSetPage} />
+                    </Section>
+                    <Footer justify="between">
+                        <Title />
+                        <Box direction="row" align="center" pad={{ between: 'medium' }}>
+                            <Paragraph margin="none">© 2018 0x Project</Paragraph>
+                            <Menu direction="row" size="small" dropAlign={{ right: 'right' }}>
+                                <Anchor href="#">About</Anchor>
+                                <Anchor href="#">FAQ</Anchor>
+                                <Anchor href="#">Contact</Anchor>
+                            </Menu>
+                        </Box>
+                    </Footer>
+                </Layout>
+            </BrowserRouter>
         );
     }
 }

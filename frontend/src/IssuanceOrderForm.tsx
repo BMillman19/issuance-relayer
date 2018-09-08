@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { IssuanceOrder } from 'setprotocol.js';
+import SetProtocol, { IssuanceOrder } from 'setprotocol.js';
+import { BigNumber } from '0x.js';
 
 import Box from 'grommet/components/Box';
 import Form from 'grommet/components/Form';
@@ -12,7 +13,9 @@ import Button from 'grommet/components/Button';
 import Select from 'grommet/components/Select';
 import NumberInput from 'grommet/components/NumberInput';
 
+import { web3Wrapper } from './web3Wrapper';
 import { sets } from './data/sets';
+import { BIG_ZERO, WETH_KOVAN_ADDRESS } from './constants';
 
 export interface IssuanceOrderFormState {
     quantity: number;
@@ -21,24 +24,8 @@ export interface IssuanceOrderFormState {
 
 export interface IssuanceOrderFormProps {
     setId: string;
-    onSubmit: (form: IssuanceOrderFormState) => void;
+    onSubmit: (form: IssuanceOrder) => void;
 }
-
-// export interface IssuanceOrder {
-//     setAddress: Address; // INPUT: dropdown
-//     makerAddress: Address; // from metamask
-//     makerToken: Address; // INPUT: WETH or DAI
-//     relayerAddress: Address; // NULL
-//     relayerToken: Address; // NULL
-//     quantity: BigNumber; // INPUT: slider
-//     makerTokenAmount: BigNumber; // INPUT: number input
-//     expiration: BigNumber; // Default to 30 mins
-//     makerRelayerFee: BigNumber; // NULL
-//     takerRelayerFee: BigNumber; // NULL
-//     salt: BigNumber; // OPTIONAL
-//     requiredComponents: Address[]; // All components
-//     requiredComponentAmounts: BigNumber[]; // All components
-// }
 
 const setOptions = sets.map(set => ({
     value: set.address,
@@ -58,12 +45,7 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
     }
     public render(): React.ReactNode {
         return (
-            <Form
-                onSubmit={e => {
-                    e.preventDefault();
-                    this.props.onSubmit(this.state);
-                }}
-            >
+            <Form onSubmit={this.onSubmitForm}>
                 <Header>
                     <Heading>Issue {setMap[this.props.setId].name} Token</Heading>
                 </Header>
@@ -93,6 +75,32 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
             </Form>
         );
     }
+    onSubmitForm = async (e: any) => {
+        e.preventDefault();
+        const issuanceOrder = await this.createIssuanceOrder();
+        this.props.onSubmit(issuanceOrder);
+    };
+
+    createIssuanceOrder = async (): Promise<IssuanceOrder> => {
+        const { quantity, makerTokenAmount } = this.state;
+        const set = setMap[this.props.setId];
+        const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
+        return {
+            setAddress: set.address,
+            makerAddress: makerAddress,
+            makerToken: WETH_KOVAN_ADDRESS,
+            relayerAddress: SetProtocol.NULL_ADDRESS,
+            relayerToken: SetProtocol.NULL_ADDRESS,
+            quantity: new BigNumber(quantity),
+            makerTokenAmount: new BigNumber(makerTokenAmount),
+            expiration: new BigNumber(Date.now() + 1000 * 30),
+            makerRelayerFee: BIG_ZERO,
+            takerRelayerFee: BIG_ZERO,
+            requiredComponents: set.components.map(componentInfo => componentInfo.address),
+            requiredComponentAmounts: set.components.map(componentInfo => new BigNumber(componentInfo.units)),
+            salt: new BigNumber(Date.now()),
+        };
+    };
 }
 
 export default IssuanceOrderForm;
