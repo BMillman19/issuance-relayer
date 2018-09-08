@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import SetProtocol from 'setprotocol.js';
-import { SignedIssuanceOrder, TakerWalletOrder, ZeroExSignedFillOrder } from 'setprotocol.js';
+import { IssuanceOrder, SignedIssuanceOrder, TakerWalletOrder, ZeroExSignedFillOrder } from 'setprotocol.js';
 import { assetDataUtils, orderHashUtils, signatureUtils } from '0x.js';
 import { Form } from 'semantic-ui-react';
 import { Order, SignerType, SignedOrder } from '@0xproject/types';
@@ -256,25 +256,45 @@ class App extends React.Component<{}, IAppState> {
     public async submitCreateIssuanceOrder() {
         const { daiAddress, setProtocol, setTokenAddress, trueUsdAddress, web3Instance, wethAddress } = this.state;
 
+        const ZERO = new BigNumber(0);
         const maker = web3Instance.eth.accounts[0];
         const makerToken = wethAddress;
-
+        const makerTokenAmount = new BigNumber(400000000000000000);
+        const quantity = new BigNumber(1000000000000000000);
+        const requiredComponents = [daiAddress, trueUsdAddress];
+        const requiredComponentAmounts = [new BigNumber(500000000000000000), new BigNumber(500000000000000000)];
+        const issuanceOrder: IssuanceOrder = {
+            setAddress: setTokenAddress,
+            makerAddress: maker,
+            makerToken,
+            relayerAddress: SetProtocol.NULL_ADDRESS,
+            relayerToken: SetProtocol.NULL_ADDRESS,
+            quantity,
+            makerTokenAmount,
+            expiration: setProtocol.orders.generateExpirationTimestamp(180),
+            makerRelayerFee: ZERO,
+            takerRelayerFee: ZERO,
+            requiredComponents,
+            requiredComponentAmounts,
+            salt: new BigNumber(Date.now()),
+        };
+        console.log(issuanceOrder);
         // For the order to be valid, the maker must approve their makerToken to the proxy
         await setProtocol.setUnlimitedTransferProxyAllowanceAsync(makerToken, { from: maker });
 
         const signedOrder: SignedIssuanceOrder = await setProtocol.orders.createSignedOrderAsync(
             setTokenAddress, // Set Address
-            new BigNumber(1000000000000000000), // Quantity
-            [daiAddress, trueUsdAddress], // Required Components
-            [new BigNumber(500000000000000000), new BigNumber(500000000000000000)], // Required Component Amounts
+            quantity, // Quantity
+            requiredComponents, // Required Components
+            requiredComponentAmounts, // Required Component Amounts
             maker, // makerAddress
             makerToken, // makerToken
-            new BigNumber(400000000000000000), // maker token amount
+            makerTokenAmount, // maker token amount
             setProtocol.orders.generateExpirationTimestamp(180), // expiration
             SetProtocol.NULL_ADDRESS, // relayer address
             SetProtocol.NULL_ADDRESS, // relayer token
-            new BigNumber(0), // maker relayer fee
-            new BigNumber(0), // taker relayer fee
+            ZERO, // maker relayer fee
+            ZERO, // taker relayer fee
         );
 
         this.setState({ signedOrder });

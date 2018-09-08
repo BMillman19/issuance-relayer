@@ -4,10 +4,11 @@ import { RouteProps } from 'react-router-dom';
 
 import Box from 'grommet/components/Box';
 import Notification from 'grommet/components/Notification';
+import Distribution from 'grommet/components/Distribution';
 
 import IssuanceOrderForm from './IssuanceOrderForm';
 import { getSetProtocolInstance } from './setProtocol';
-import styled from './styled';
+import { setMap } from './data/sets';
 
 export interface IssueSetPageState {
     isLoading: boolean;
@@ -25,21 +26,36 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
         };
     }
     public render(): React.ReactNode {
+        const setId = this.props.match.params.setId;
+        const set = setMap[setId];
         return (
             <Box>
-                <IssuanceOrderForm
-                    isLoading={this.state.isLoading}
-                    setId={this.props.match.params.setId}
-                    onSubmit={this.handleFormSubmit}
-                />
-                {this.state.errorMessage && (
-                    <Notification
-                        closer={true}
-                        message={this.state.errorMessage}
-                        onClose={() => this.setState({ errorMessage: null })}
-                        status="warning"
-                    />
-                )}
+                <Box>
+                    <Box justify="center" align="center">
+                        <IssuanceOrderForm
+                            isLoading={this.state.isLoading}
+                            setId={this.props.match.params.setId}
+                            onSubmit={this.handleFormSubmit}
+                        />
+                    </Box>
+                    {this.state.errorMessage && (
+                        <Notification
+                            closer={true}
+                            message={this.state.errorMessage}
+                            onClose={() => this.setState({ errorMessage: null })}
+                            status="warning"
+                        />
+                    )}
+                    <Box justify="center" align="center">
+                        <Distribution
+                            series={set.components.map(componentInfo => ({
+                                value: +componentInfo.percent_of_set,
+                                label: componentInfo.name,
+                            }))}
+                            units="%"
+                        />
+                    </Box>
+                </Box>
             </Box>
         );
     }

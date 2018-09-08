@@ -176,7 +176,7 @@ export const sets = [
                 symbol: 'TUSD',
                 decimals: 18,
                 image: 'https://s3.amazonaws.com/set-core/img/coin-icons/tusd.svg',
-                address: '0xaeb5ddbeb7f855aa44a40b0d17c742031642414b',
+                address: '0xAdB015D61F4bEb2A712D237D9d4c5B75BAFEfd7B',
                 percent_of_set: '50.09',
                 price_eth: '0.00464349376114082',
                 price_usd: '1.006260963',
@@ -190,7 +190,7 @@ export const sets = [
                 symbol: 'DAI',
                 decimals: 18,
                 image: 'https://s3.amazonaws.com/set-core/img/coin-icons/dai.svg',
-                address: '0xd215299202a513afec26b1e0cad1606eee3e149d',
+                address: '0x1d82471142F0aeEEc9FC375fC975629056c26ceE',
                 percent_of_set: '49.91',
                 price_eth: '0.004627381454911273',
                 price_usd: '1.000602688919796',
@@ -258,3 +258,8 @@ export const sets = [
         ],
     },
 ];
+
+export const setMap = sets.reduce((acc, set) => {
+    acc[set.id] = set;
+    return acc;
+}, {});
