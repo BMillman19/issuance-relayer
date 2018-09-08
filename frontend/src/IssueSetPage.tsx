@@ -3,6 +3,7 @@ import { IssuanceOrder, SignedIssuanceOrder } from 'setprotocol.js';
 import { RouteProps } from 'react-router-dom';
 
 import Box from 'grommet/components/Box';
+import Notification from 'grommet/components/Notification';
 
 import IssuanceOrderForm from './IssuanceOrderForm';
 import { getSetProtocolInstance } from './setProtocol';
@@ -19,7 +20,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: false,
             errorMessage: '',
         };
     }
@@ -31,6 +32,14 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
                     setId={this.props.match.params.setId}
                     onSubmit={this.handleFormSubmit}
                 />
+                {this.state.errorMessage && (
+                    <Notification
+                        closer={true}
+                        message={this.state.errorMessage}
+                        onClose={() => this.setState({ errorMessage: null })}
+                        status="warning"
+                    />
+                )}
             </Box>
         );
     }
@@ -69,7 +78,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
             );
             // TODO: Send SignedIssuanceOrder
         } catch (e) {
-            console.log(e);
+            this.setState({ errorMessage: e.message });
         } finally {
             this.setState({ isLoading: false });
         }
