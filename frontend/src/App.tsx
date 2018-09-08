@@ -12,7 +12,7 @@ import Paragraph from 'grommet/components/Paragraph';
 import Section from 'grommet/components/Section';
 import Title from 'grommet/components/Title';
 
-import SetSelection from './SetSelection';
+import SetSelectionPage from './SetSelectionPage';
 
 class App extends React.Component {
     public render() {
@@ -22,18 +22,15 @@ class App extends React.Component {
                     <Title>Issuance Relayer</Title>
                     <Box flex={true} justify="end" direction="row" responsive={false}>
                         <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
-                            <Anchor href="#" className="active">
-                                First
-                            </Anchor>
                             <Anchor href="#">Create Issuance Order</Anchor>
                             <Anchor href="#">See All Orders</Anchor>
                         </Menu>
                     </Box>
                 </Header>
-                <Section margin={{ vertical: 'large' }} full="vertical">
+                <Section margin={{ vertical: 'large' }}>
                     <BrowserRouter>
                         <div>
-                            <Route exact={true} path="/" component={SetSelection} />
+                            <Route exact={true} path="/" component={SetSelectionPage} />
                         </div>
                     </BrowserRouter>
                 </Section>
