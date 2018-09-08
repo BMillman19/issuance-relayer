@@ -10,8 +10,6 @@
         "skipLibCheck": true,
         "typeRoots": ["node_modules/@0xproject/typescript-typings/types", "node_modules/@types"],
         "strict": true,
-        // These settings are required for TypeScript project references
-        "composite": true,
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,

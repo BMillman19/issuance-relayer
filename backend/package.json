@@ -8,19 +8,24 @@
     "description": "Set protocol issuance order relayer",
     "main": "server.js",
     "scripts": {
-        "build": "node node_modules/gulp/bin/gulp.js build",
-        "dev": "node node_modules/gulp/bin/gulp.js run",
-        "start": "node ./server/server.js",
+        "build": "tsc",
+        "dev": "tsc -w",
+        "start": "node ./lib/server.js",
         "lint": "tslint --project .",
-        "clean": "shx rm -rf server",
+        "clean": "shx rm -rf lib",
         "prettier": "prettier --write '**/*.{ts,tsx,json,md}' --config ../.prettierrc"
     },
     "author": "Brandon Millman",
     "license": "MIT",
     "dependencies": {
+        "@0xproject/order-utils": "^1.0.1",
+        "@0xproject/subproviders": "^2.0.2",
+        "@0xproject/types": "^1.0.1",
+        "@0xproject/utils": "^1.0.8",
         "body-parser": "^1.17.1",
         "express": "^4.15.2",
-        "lodash": "^4.17.5"
+        "lodash": "^4.17.5",
+        "setprotocol.js": "^1.0.0-alpha.26"
     },
     "devDependencies": {
         "@0xproject/tslint-config": "^1.0.7",
