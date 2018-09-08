@@ -14,8 +14,8 @@ import Select from 'grommet/components/Select';
 import NumberInput from 'grommet/components/NumberInput';
 
 import { web3Wrapper } from './web3Wrapper';
-import { sets } from './data/sets';
-import { BIG_ZERO, WETH_KOVAN_ADDRESS } from './constants';
+import { sets, setMap } from './data/sets';
+import { BIG_ZERO, WETH_KOVAN_ADDRESS, BIG_E18 } from './constants';
 
 export interface IssuanceOrderFormState {
     quantity: number;
@@ -32,10 +32,7 @@ const setOptions = sets.map(set => ({
     value: set.address,
     label: set.name,
 }));
-const setMap = sets.reduce((acc, set) => {
-    acc[set.id] = set;
-    return acc;
-}, {});
+
 class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, IssuanceOrderFormState> {
     constructor(props: IssuanceOrderFormProps) {
         super(props);
@@ -45,16 +42,18 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
         };
     }
     public render(): React.ReactNode {
+        const set = setMap[this.props.setId];
         return (
             <Form onSubmit={this.onSubmitForm}>
                 <Header>
-                    <Heading>Issue {setMap[this.props.setId].name} Token</Heading>
+                    <Heading>Issue {set.name} Token</Heading>
                 </Header>
                 <FormFields>
                     <FormField label="Quantity">
                         <NumberInput
                             value={this.state.quantity}
                             min={0}
+                            step={+set.natural_units}
                             onChange={(e: React.FormEvent<HTMLInputElement>) => {
                                 this.setState({ quantity: (e.target as any).value });
                             }}
@@ -81,7 +80,6 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
         const issuanceOrder = await this.createIssuanceOrder();
         this.props.onSubmit(issuanceOrder);
     };
-
     createIssuanceOrder = async (): Promise<IssuanceOrder> => {
         const { quantity, makerTokenAmount } = this.state;
         const set = setMap[this.props.setId];
@@ -93,12 +91,15 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
             relayerAddress: SetProtocol.NULL_ADDRESS,
             relayerToken: SetProtocol.NULL_ADDRESS,
             quantity: new BigNumber(quantity),
-            makerTokenAmount: new BigNumber(makerTokenAmount),
+            makerTokenAmount: new BigNumber(makerTokenAmount).mul(BIG_E18),
             expiration: new BigNumber(Date.now() + 1000 * 30),
             makerRelayerFee: BIG_ZERO,
             takerRelayerFee: BIG_ZERO,
             requiredComponents: set.components.map(componentInfo => componentInfo.address),
-            requiredComponentAmounts: set.components.map(componentInfo => new BigNumber(componentInfo.units)),
+            requiredComponentAmounts: set.components.map(componentInfo => {
+                const bigUnits = new BigNumber(componentInfo.units);
+                return bigUnits.mul(quantity);
+            }),
             salt: new BigNumber(Date.now()),
         };
     };
