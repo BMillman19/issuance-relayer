@@ -23,7 +23,7 @@ class App extends React.Component {
                 <Layout>
                     <Header fixed={false} float={false} size="large" splash={false}>
                         <Title>
-                            <Link to="/">Issuance Relayer </Link>
+                            <Link to="/">Bündler</Link>
                         </Title>
                         <Box flex={true} justify="end" direction="row" responsive={false}>
                             <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
