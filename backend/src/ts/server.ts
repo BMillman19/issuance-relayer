@@ -1,12 +1,23 @@
 import { assetDataUtils, marketUtils, sortingUtils } from '@0xproject/order-utils';
+import { PrivateKeyWalletSubprovider, Provider, RPCSubprovider, Web3ProviderEngine } from '@0xproject/subproviders';
 import { BigNumber } from '@0xproject/utils';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
+import wrap = require('express-async-wrap');
 import * as _ from 'lodash';
 
 import { constants } from './constants';
 import { ZeroExOrderService } from './services/zero_ex_order_service';
 import { setProtocolFactory } from './set_protocol_factory';
+
+const KOVAN_RPC_URL = 'https://kovan.infura.io/';
+const providerEngine = new Web3ProviderEngine();
+const privateKey = process.env.PRIVATE_KEY as string;
+const pkSubprovider = new PrivateKeyWalletSubprovider(privateKey);
+const rpcSubprovider = new RPCSubprovider(KOVAN_RPC_URL);
+providerEngine.addProvider(pkSubprovider);
+providerEngine.addProvider(rpcSubprovider);
+providerEngine.start();
 
 const BUFFER_MULTIPLIER = 1.2;
 
@@ -55,8 +66,8 @@ app.get('/quote', async (req: express.Request, res: express.Response) => {
      * Return:
      * makerTokenAmount -> string
      */
-    const setProtocol = setProtocolFactory.createSetProtocol();
-    const components = await setProtocol.setToken.getComponentsAsync(req.params.setAddress);
+    const setProtocol = setProtocolFactory.createSetProtocol(providerEngine);
+    const components = await setProtocol.setToken.getComponentsAsync(req.query.setAddress);
     const tokenAssetDatas = _.map(components, address => assetDataUtils.encodeERC20AssetData(address));
     const orderbookRequests = _.map(tokenAssetDatas, assetData => {
         return {
@@ -64,20 +75,20 @@ app.get('/quote', async (req: express.Request, res: express.Response) => {
             quoteAssetData: constants.KOVAN_WETH_TOKEN_ASSET_DATA,
         };
     });
-    const zeroExService = new ZeroExOrderService();
+    const zeroExService = new ZeroExOrderService(providerEngine);
     const orderbooks = await Promise.all(_.map(orderbookRequests, request => zeroExService.getOrderbookAsync(request)));
     const asksList = _.map(orderbooks, orderbook => sortingUtils.sortOrdersByFeeAdjustedRate(orderbook.asks));
-    const units = await setProtocol.setToken.getUnitsAsync(req.params.setAddress);
-    const quantity = new BigNumber(req.params.quantity);
+    const units = await setProtocol.setToken.getUnitsAsync(req.query.setAddress);
+    const quantity = new BigNumber(req.query.quantity);
     const requiredAmounts = _.map(units, unit => unit.mul(quantity).mul(BUFFER_MULTIPLIER));
     const targetOrdersArray = _.map(asksList, (asks, index) => {
-        const requiredAmount = requiredAmounts[index];
+        const requiredAmount = new BigNumber(requiredAmounts[index]);
         return marketUtils.findOrdersThatCoverMakerAssetFillAmount(asks, requiredAmount);
     });
-    const totalCost = new BigNumber(0);
+    let totalCost = new BigNumber(0);
     for (const targetOrders of targetOrdersArray) {
         for (const order of targetOrders.resultOrders) {
-            totalCost.add(order.takerAssetAmount);
+            totalCost = totalCost.add(order.takerAssetAmount);
         }
     }
     const price = totalCost.div(quantity);

@@ -1,4 +1,5 @@
 import { assetDataUtils } from '@0xproject/order-utils';
+import { BigNumber } from '@0xproject/utils';
 
 export const constants = {
     SET_KOVAN_ADDRESSES: {
@@ -14,4 +15,6 @@ export const constants = {
         wethAddress: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
     },
     KOVAN_WETH_TOKEN_ASSET_DATA: assetDataUtils.encodeERC20AssetData('0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
+    NULL_ADDRESS: '0x0000000000000000000000000000000000000000',
+    ZERO_AMOUNT: new BigNumber(0),
 };
