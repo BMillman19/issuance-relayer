@@ -25,17 +25,8 @@ export interface IZeroExOrderService {
 
 export class ZeroExOrderService implements IZeroExOrderService {
     private _provider: Provider;
-    constructor() {
-        const privateKey = process.env.PRIVATE_KEY;
-        if (!_.isUndefined(privateKey)) {
-            const providerEngine = new Web3ProviderEngine();
-            const pkSubprovider = new PrivateKeyWalletSubprovider(privateKey);
-            providerEngine.addProvider(pkSubprovider);
-            providerEngine.start();
-            this._provider = providerEngine;
-        } else {
-            throw new Error('MISSING_PK');
-        }
+    constructor(provider: Provider) {
+        this._provider = provider;
     }
     public async getOrderbookAsync(request: OrderbookRequest): Promise<OrderbookResponse> {
         const order: Order = {
@@ -54,21 +45,18 @@ export class ZeroExOrderService implements IZeroExOrderService {
             expirationTimeSeconds: new BigNumber(Date.now() + 1000000000000000),
         };
         const orderHash = orderHashUtils.getOrderHashHex(order);
-        console.log('start sign');
         const signature = await signatureUtils.ecSignOrderHashAsync(
             this._provider,
             orderHash,
             PUBLIC_ADDRESS,
             SignerType.Default,
         );
-        console.log('stop sign');
         const signedOrder: SignedOrder = {
             signature,
             ...order,
         };
         const bids = [] as SignedOrder[];
         const asks = [signedOrder];
-        console.log(order);
         return {
             bids,
             asks,
