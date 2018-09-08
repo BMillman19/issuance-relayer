@@ -275,7 +275,7 @@ const sets = [
     },
 ];
 
-class SetSelection extends React.Component {
+class SetSelectionPage extends React.Component {
     public render(): React.ReactNode {
         return (
             <Box>
@@ -290,7 +290,7 @@ class SetSelection extends React.Component {
                                 }
                                 heading={set.name}
                                 description={set.description}
-                                link={<Link to={`set/${set.id}`}>Issue this Set</Link>}
+                                link={<Link to={`issue/${set.id}`}>Issue this Set</Link>}
                             />
                         </Tile>
                     ))}
@@ -300,4 +300,4 @@ class SetSelection extends React.Component {
     }
 }
 
-export default SetSelection;
+export default SetSelectionPage;

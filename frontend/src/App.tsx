@@ -13,6 +13,7 @@ import Section from 'grommet/components/Section';
 import Title from 'grommet/components/Title';
 
 import SetSelectionPage from './SetSelectionPage';
+import IssueSetPage from './IssueSetPage';
 
 class App extends React.Component {
     public render() {
@@ -31,13 +32,12 @@ class App extends React.Component {
                     <BrowserRouter>
                         <div>
                             <Route exact={true} path="/" component={SetSelectionPage} />
+                            <Route path="/issue/:setId" component={IssueSetPage} />
                         </div>
                     </BrowserRouter>
                 </Section>
                 <Footer justify="between">
-                    <Title>
-                        <s />
-                    </Title>
+                    <Title />
                     <Box direction="row" align="center" pad={{ between: 'medium' }}>
                         <Paragraph margin="none">© 2018 0x Project</Paragraph>
                         <Menu direction="row" size="small" dropAlign={{ right: 'right' }}>
