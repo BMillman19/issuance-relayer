@@ -12,7 +12,7 @@
         "dev": "tsc -w",
         "start": "node ./lib/server.js",
         "lint": "tslint --project .",
-        "clean": "shx rm -rf server",
+        "clean": "shx rm -rf lib",
         "prettier": "prettier --write '**/*.{ts,tsx,json,md}' --config ../.prettierrc"
     },
     "author": "Brandon Millman",
