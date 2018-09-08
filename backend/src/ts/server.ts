@@ -11,6 +11,6 @@ app.use((req, res, next) => {
 app.get('/ping', (req: express.Request, res: express.Response) => {
     res.status(200).send('pong');
 });
-const DEFAULT_PORT = 3000;
+const DEFAULT_PORT = 8080;
 const port = process.env.PORT || DEFAULT_PORT;
 app.listen(port);
