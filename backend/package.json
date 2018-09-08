@@ -18,7 +18,10 @@
     "author": "Brandon Millman",
     "license": "MIT",
     "dependencies": {
+        "@0xproject/order-utils": "^1.0.1",
         "@0xproject/subproviders": "^2.0.2",
+        "@0xproject/types": "^1.0.1",
+        "@0xproject/utils": "^1.0.8",
         "body-parser": "^1.17.1",
         "express": "^4.15.2",
         "lodash": "^4.17.5",
