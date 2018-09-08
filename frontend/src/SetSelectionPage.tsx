@@ -8,13 +8,6 @@ import Tile from 'grommet/components/Tile';
 import Tiles from 'grommet/components/Tiles';
 import { sets } from './data/sets';
 
-export interface ISetData {
-    thumbnail: string;
-    label: string;
-    heading: string;
-    description: string;
-}
-
 class SetSelectionPage extends React.Component {
     public render(): React.ReactNode {
         return (

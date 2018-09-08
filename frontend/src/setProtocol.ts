@@ -12,7 +12,7 @@ const config = {
 };
 
 let setProtocol = null;
-const getSetProcolInstance = () => {
+export const getSetProtocolInstance = () => {
     if (setProtocol) {
         return setProtocol;
     }
