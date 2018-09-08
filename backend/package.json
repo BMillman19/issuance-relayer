@@ -20,7 +20,8 @@
     "dependencies": {
         "body-parser": "^1.17.1",
         "express": "^4.15.2",
-        "lodash": "^4.17.5"
+        "lodash": "^4.17.5",
+        "setprotocol.js": "^1.0.0-alpha.26"
     },
     "devDependencies": {
         "@0xproject/tslint-config": "^1.0.7",
