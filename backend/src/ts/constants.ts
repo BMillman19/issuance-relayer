@@ -1,3 +1,5 @@
+import { assetDataUtils } from '@0xproject/order-utils';
+
 export const constants = {
     SET_KOVAN_ADDRESSES: {
         coreAddress: '0x29f13822ece62b7a436a45903ce6d5c97d6e4cc9',
@@ -11,4 +13,5 @@ export const constants = {
         trueUsdAddress: '0xAdB015D61F4bEb2A712D237D9d4c5B75BAFEfd7B',
         wethAddress: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
     },
+    KOVAN_WETH_TOKEN_ASSET_DATA: assetDataUtils.encodeERC20AssetData('0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
 };

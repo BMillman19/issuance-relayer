@@ -1,5 +1,14 @@
+import { assetDataUtils, marketUtils, sortingUtils } from '@0xproject/order-utils';
+import { BigNumber } from '@0xproject/utils';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
+import * as _ from 'lodash';
+
+import { constants } from './constants';
+import { ZeroExOrderService } from './services/zero_ex_order_service';
+import { setProtocolFactory } from './set_protocol_factory';
+
+const BUFFER_MULTIPLIER = 1.2;
 
 const app = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -35,6 +44,47 @@ app.get('/sets', (req: express.Request, res: express.Response) => {
             ],
         },
     ];
+    res.status(200).send(JSON.stringify(result, null, 2));
+});
+app.get('/quote', async (req: express.Request, res: express.Response) => {
+    /**
+     * Params:
+     * setAddress: string
+     * quantity: string -> BigNumber
+     *
+     * Return:
+     * makerTokenAmount -> string
+     */
+    const setProtocol = setProtocolFactory.createSetProtocol();
+    const components = await setProtocol.setToken.getComponentsAsync(req.params.setAddress);
+    const tokenAssetDatas = _.map(components, address => assetDataUtils.encodeERC20AssetData(address));
+    const orderbookRequests = _.map(tokenAssetDatas, assetData => {
+        return {
+            baseAssetData: assetData,
+            quoteAssetData: constants.KOVAN_WETH_TOKEN_ASSET_DATA,
+        };
+    });
+    const zeroExService = new ZeroExOrderService();
+    const orderbooks = await Promise.all(_.map(orderbookRequests, request => zeroExService.getOrderbookAsync(request)));
+    const asksList = _.map(orderbooks, orderbook => sortingUtils.sortOrdersByFeeAdjustedRate(orderbook.asks));
+    const units = await setProtocol.setToken.getUnitsAsync(req.params.setAddress);
+    const quantity = new BigNumber(req.params.quantity);
+    const requiredAmounts = _.map(units, unit => unit.mul(quantity).mul(BUFFER_MULTIPLIER));
+    const targetOrdersArray = _.map(asksList, (asks, index) => {
+        const requiredAmount = requiredAmounts[index];
+        return marketUtils.findOrdersThatCoverMakerAssetFillAmount(asks, requiredAmount);
+    });
+    const totalCost = new BigNumber(0);
+    for (const targetOrders of targetOrdersArray) {
+        for (const order of targetOrders.resultOrders) {
+            totalCost.add(order.takerAssetAmount);
+        }
+    }
+    const price = totalCost.div(quantity);
+    const result = {
+        totalCost,
+        price,
+    };
     res.status(200).send(JSON.stringify(result, null, 2));
 });
 const DEFAULT_PORT = 8080;
