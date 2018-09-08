@@ -10,7 +10,7 @@
     "scripts": {
         "build": "tsc",
         "dev": "tsc -w",
-        "start": "node ./server/server.js",
+        "start": "node ./lib/server.js",
         "lint": "tslint --project .",
         "clean": "shx rm -rf server",
         "prettier": "prettier --write '**/*.{ts,tsx,json,md}' --config ../.prettierrc"
