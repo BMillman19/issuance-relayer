@@ -8,8 +8,8 @@
     "description": "Set protocol issuance order relayer",
     "main": "server.js",
     "scripts": {
-        "build": "node node_modules/gulp/bin/gulp.js build",
-        "dev": "node node_modules/gulp/bin/gulp.js run",
+        "build": "tsc",
+        "dev": "tsc -w",
         "start": "node ./server/server.js",
         "lint": "tslint --project .",
         "clean": "shx rm -rf server",
