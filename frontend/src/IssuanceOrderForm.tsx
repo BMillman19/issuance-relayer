@@ -25,6 +25,7 @@ export interface IssuanceOrderFormState {
 export interface IssuanceOrderFormProps {
     setId: string;
     onSubmit: (form: IssuanceOrder) => void;
+    isLoading: boolean;
 }
 
 const setOptions = sets.map(set => ({
@@ -70,7 +71,7 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
                     </FormField>
                 </FormFields>
                 <Footer pad={{ vertical: 'medium' }}>
-                    <Button label="Submit" type="submit" primary={true} />
+                    <Button label={this.props.isLoading ? '...Loading' : 'Submit'} type="submit" primary={true} />
                 </Footer>
             </Form>
         );

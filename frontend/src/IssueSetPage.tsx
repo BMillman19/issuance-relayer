@@ -6,6 +6,7 @@ import Box from 'grommet/components/Box';
 
 import IssuanceOrderForm from './IssuanceOrderForm';
 import { getSetProtocolInstance } from './setProtocol';
+import styled from './styled';
 
 export interface IssueSetPageState {
     isLoading: boolean;
@@ -18,14 +19,18 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
+            isLoading: true,
             errorMessage: '',
         };
     }
     public render(): React.ReactNode {
         return (
             <Box>
-                <IssuanceOrderForm setId={this.props.match.params.setId} onSubmit={this.handleFormSubmit} />
+                <IssuanceOrderForm
+                    isLoading={this.state.isLoading}
+                    setId={this.props.match.params.setId}
+                    onSubmit={this.handleFormSubmit}
+                />
             </Box>
         );
     }
