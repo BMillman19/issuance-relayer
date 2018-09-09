@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { constants } from '../constants';
 
 const PUBLIC_ADDRESS = '0x89037cd54e3f96aadf9df8c2c59decd0b2c49fe3';
-const EXCHANGE_ADDRESS = '0x35dd2932454449b14cee11a94d3674a936d5d7b2';
+const EXCHANGE_ADDRESS = '0xb65619b82c4d385de0c5b4005452c2fdee0f86d1';
 
 export interface OrderbookRequest {
     baseAssetData: string;
