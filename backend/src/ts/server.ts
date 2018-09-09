@@ -30,7 +30,7 @@ providerEngine.addProvider(rpcSubprovider);
 providerEngine.start();
 const setProtocol = setProtocolFactory.createSetProtocol(providerEngine);
 
-const BUFFER_MULTIPLIER = 1.2;
+const BUFFER_MULTIPLIER = 1;
 
 interface JsonSignedIssuanceOrder {
     setAddress: string;
@@ -98,15 +98,17 @@ app.get('/quote', async (req: express.Request, res: express.Response) => {
      * Return:
      * makerTokenAmount -> string
      */
+    const naturalUnit = await setProtocol.setToken.getNaturalUnitAsync(req.query.setAddress);
     const components = await setProtocol.setToken.getComponentsAsync(req.query.setAddress);
     const componentAmounts = await setProtocol.setToken.getUnitsAsync(req.query.setAddress);
     const quantity = new BigNumber(req.query.quantity);
-    const targetOrdersArray = await getOrdersForComponentsAsync(components, componentAmounts, quantity);
-    const totalCost = getCostForOrders(targetOrdersArray);
-    const price = totalCost.div(quantity);
+    const naturalQuantity = quantity.div(naturalUnit);
+    const targetOrdersArray = await getOrdersForComponentsAsync(components, componentAmounts, naturalQuantity);
+    const avgPrice = getWeightedAveragePriceForOrdersArray(targetOrdersArray);
+    const totalCost = avgPrice.mul(quantity);
     const result = {
         totalCost,
-        price,
+        price: avgPrice,
     };
     res.status(200).send(JSON.stringify(result, null, 2));
 });
@@ -126,10 +128,11 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
         issuanceOrder.quantity,
     );
     const maxCost = req.body.max_cost ? new BigNumber(req.body.max_cost) : Infinity;
-    const totalCost = getCostForOrders(targetOrdersArray);
-    // if (totalCost.greaterThan(maxCost)) {
-    //     throw new Error('Max cost exceeded');
-    // }
+    const avgPrice = getWeightedAveragePriceForOrdersArray(targetOrdersArray);
+    const totalCost = avgPrice.mul(issuanceOrder.quantity);
+    if (totalCost.greaterThan(maxCost)) {
+        throw new Error('Max cost exceeded');
+    }
     const flattenedOrders = _.flatten(_.map(targetOrdersArray, targetOrders => targetOrders.resultOrders));
     const zeroExSignedFillOrders = _.map(flattenedOrders, order => ({
         ...order,
@@ -179,7 +182,7 @@ function unJSONifyOrder(jsonOrder: JsonSignedIssuanceOrder): SignedIssuanceOrder
 async function getOrdersForComponentsAsync(
     components: string[],
     componentAmounts: BigNumber[],
-    quantity: BigNumber,
+    naturalQuantity: BigNumber,
 ): Promise<Array<OrdersAndRemainingFillAmount<SignedOrder>>> {
     const tokenAssetDatas = _.map(components, address => assetDataUtils.encodeERC20AssetData(address));
     const orderbookRequests = _.map(tokenAssetDatas, assetData => {
@@ -191,7 +194,7 @@ async function getOrdersForComponentsAsync(
     const zeroExService = new ZeroExOrderService(providerEngine);
     const orderbooks = await Promise.all(_.map(orderbookRequests, request => zeroExService.getOrderbookAsync(request)));
     const asksList = _.map(orderbooks, orderbook => sortingUtils.sortOrdersByFeeAdjustedRate(orderbook.asks));
-    const requiredAmounts = _.map(componentAmounts, amount => amount.mul(quantity).mul(BUFFER_MULTIPLIER));
+    const requiredAmounts = _.map(componentAmounts, amount => amount.mul(naturalQuantity).mul(BUFFER_MULTIPLIER));
     const targetOrdersArray = _.map(asksList, (asks, index) => {
         const requiredAmount = new BigNumber(requiredAmounts[index]);
         return marketUtils.findOrdersThatCoverMakerAssetFillAmount(asks, requiredAmount);
@@ -199,12 +202,29 @@ async function getOrdersForComponentsAsync(
     return targetOrdersArray;
 }
 
-function getCostForOrders(targetOrdersArray: Array<OrdersAndRemainingFillAmount<SignedOrder>>): BigNumber {
+function getWeightedAveragePriceForOrdersArray(
+    targetOrdersArray: Array<OrdersAndRemainingFillAmount<SignedOrder>>,
+): BigNumber {
+    const avgPrices = _.map(targetOrdersArray, targetOrders =>
+        getWeightedAveragePriceForOrders(targetOrders.resultOrders),
+    );
+    return bigNumberSum(avgPrices).div(avgPrices.length);
+}
+
+function getWeightedAveragePriceForOrders(orders: SignedOrder[]): BigNumber {
     let totalCost = new BigNumber(0);
-    for (const targetOrders of targetOrdersArray) {
-        for (const order of targetOrders.resultOrders) {
-            totalCost = totalCost.add(order.takerAssetAmount);
-        }
+    let totalAmount = new BigNumber(0);
+    for (const order of orders) {
+        totalCost = totalCost.add(order.takerAssetAmount);
+        totalAmount = totalAmount.add(order.makerAssetAmount);
     }
-    return totalCost;
+    return totalCost.div(totalAmount);
+}
+
+function bigNumberSum(numbers: BigNumber[]): BigNumber {
+    let sum = new BigNumber(0);
+    for (const n of numbers) {
+        sum = sum.add(n);
+    }
+    return sum;
 }
