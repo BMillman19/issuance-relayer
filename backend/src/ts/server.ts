@@ -11,7 +11,7 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import wrap = require('express-async-wrap');
 import * as _ from 'lodash';
-import SetProtocol, { Address, SignedIssuanceOrder } from 'setprotocol.js';
+import SetProtocol, { Address, SignedIssuanceOrder, ZeroExSignedFillOrder } from 'setprotocol.js';
 
 import { constants } from './constants';
 import { ZeroExOrderService } from './services/zero_ex_order_service';
@@ -121,6 +121,7 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
      * Return:
      * makerTokenAmount -> string
      */
+
     const issuanceOrder = unJSONifyOrder(req.body.issuance_order as JsonSignedIssuanceOrder);
     const targetOrdersArray = await getOrdersForComponentsAsync(
         issuanceOrder.requiredComponents,
@@ -134,11 +135,90 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
         throw new Error('Max cost exceeded');
     }
     const flattenedOrders = _.flatten(_.map(targetOrdersArray, targetOrders => targetOrders.resultOrders));
-    const zeroExSignedFillOrders = _.map(flattenedOrders, order => ({
+    const zeroExSignedFillOrders: ZeroExSignedFillOrder[] = _.map(flattenedOrders, order => ({
         ...order,
-        takerTokenAmount: order.makerAssetAmount,
+        fillAmount: order.takerAssetAmount,
         takerTokenAddress: assetDataUtils.decodeERC20AssetData(order.makerAssetData).tokenAddress,
     }));
+
+    console.log('0x signed fill orders', JSON.stringify(zeroExSignedFillOrders));
+
+    const [trueUSD, dai] = issuanceOrder.requiredComponents;
+
+    // await setProtocol.erc20.approveAsync(
+    //     trueUSD,
+    //     constants.SET_KOVAN_ADDRESSES.zeroExExchange,
+    //     new BigNumber(1000000000000000000000),
+    //     {
+    //         from: PUBLIC_ADDRESS,
+    //     },
+    // );
+
+    // await setProtocol.erc20.approveAsync(
+    //     dai,
+    //     constants.SET_KOVAN_ADDRESSES.zeroExExchange,
+    //     new BigNumber(1000000000000000000000),
+    //     {
+    //         from: PUBLIC_ADDRESS,
+    //     },
+    // );
+
+    // Log balances
+    const trueUsdMakerBalance = await setProtocol.erc20.getBalanceOfAsync(trueUSD, PUBLIC_ADDRESS);
+    const daiMakerBalance = await setProtocol.erc20.getBalanceOfAsync(dai, PUBLIC_ADDRESS);
+    let trueUsdMakerAllowance = await setProtocol.erc20.getAllowanceAsync(
+        trueUSD,
+        PUBLIC_ADDRESS,
+        constants.SET_KOVAN_ADDRESSES.erc20Proxy,
+    );
+    let daiMakerAllowance = await setProtocol.erc20.getAllowanceAsync(
+        dai,
+        PUBLIC_ADDRESS,
+        constants.SET_KOVAN_ADDRESSES.erc20Proxy,
+    );
+    const from = PUBLIC_ADDRESS;
+
+    if (trueUsdMakerAllowance.lte(0)) {
+        await setProtocol.erc20.approveAsync(
+            trueUSD,
+            constants.SET_KOVAN_ADDRESSES.erc20Proxy,
+            new BigNumber(1000000000000000000),
+            { from },
+        );
+    }
+    if (daiMakerAllowance.lte(0)) {
+        await setProtocol.erc20.approveAsync(
+            dai,
+            constants.SET_KOVAN_ADDRESSES.erc20Proxy,
+            new BigNumber(1000000000000000000),
+            { from },
+        );
+    }
+
+    trueUsdMakerAllowance = await setProtocol.erc20.getAllowanceAsync(
+        trueUSD,
+        PUBLIC_ADDRESS,
+        constants.SET_KOVAN_ADDRESSES.erc20Proxy,
+    );
+    daiMakerAllowance = await setProtocol.erc20.getAllowanceAsync(
+        dai,
+        PUBLIC_ADDRESS,
+        constants.SET_KOVAN_ADDRESSES.erc20Proxy,
+    );
+    const userBalance = await setProtocol.erc20.getBalanceOfAsync(
+        constants.SET_KOVAN_ADDRESSES.wethAddress,
+        issuanceOrder.makerAddress,
+    );
+    const userAllowance = await setProtocol.erc20.getAllowanceAsync(
+        constants.SET_KOVAN_ADDRESSES.wethAddress,
+        issuanceOrder.makerAddress,
+        constants.SET_KOVAN_ADDRESSES.transferProxyAddress,
+    );
+
+    console.log('trueusd balance and allowance', trueUsdMakerBalance, trueUsdMakerAllowance);
+    console.log('dai balance and allowance', daiMakerBalance, daiMakerAllowance);
+    console.log('maker WETH balance and allowance', userBalance, userAllowance);
+
     const txHash = await setProtocol.orders.fillOrderAsync(
         issuanceOrder,
         issuanceOrder.quantity,
