@@ -15,11 +15,12 @@ import NumberInput from 'grommet/components/NumberInput';
 
 import { web3Wrapper } from './web3Wrapper';
 import { sets, setMap } from './data/sets';
+import { api } from './api';
 import { BIG_ZERO, WETH_KOVAN_ADDRESS, BIG_E18 } from './constants';
 
 export interface IssuanceOrderFormState {
-    quantity: number;
-    makerTokenAmount: number;
+    quantity: BigNumber;
+    makerTokenAmount: BigNumber;
 }
 
 export interface IssuanceOrderFormProps {
@@ -37,8 +38,8 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
     constructor(props: IssuanceOrderFormProps) {
         super(props);
         this.state = {
-            quantity: 0,
-            makerTokenAmount: 0,
+            quantity: BIG_ZERO,
+            makerTokenAmount: BIG_ZERO,
         };
     }
     public render(): React.ReactNode {
@@ -51,20 +52,23 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
                 <FormFields>
                     <FormField label="Quantity">
                         <NumberInput
-                            value={this.state.quantity}
+                            value={this.state.quantity.toNumber()}
                             min={0}
                             step={+set.natural_units}
-                            onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                this.setState({ quantity: (e.target as any).value });
+                            onChange={async (e: React.FormEvent<HTMLInputElement>) => {
+                                const quantity = (e.target as any).value;
+                                this.setState({ quantity: new BigNumber(quantity) });
+                                const { totalCost, price } = await api.getQuote(set.address, quantity);
+                                this.setState({ makerTokenAmount: totalCost.div(BIG_E18) });
                             }}
                         />
                     </FormField>
                     <FormField label="WETH Token Amount">
                         <NumberInput
-                            value={this.state.makerTokenAmount}
+                            value={this.state.makerTokenAmount.toNumber()}
                             min={0}
                             onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                this.setState({ makerTokenAmount: (e.target as any).value });
+                                this.setState({ makerTokenAmount: new BigNumber((e.target as any).value) });
                             }}
                         />
                     </FormField>
@@ -90,8 +94,8 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
             makerToken: WETH_KOVAN_ADDRESS,
             relayerAddress: SetProtocol.NULL_ADDRESS,
             relayerToken: SetProtocol.NULL_ADDRESS,
-            quantity: new BigNumber(quantity),
-            makerTokenAmount: new BigNumber(makerTokenAmount).mul(BIG_E18),
+            quantity: quantity,
+            makerTokenAmount: makerTokenAmount.mul(BIG_E18),
             expiration: new BigNumber(Date.now() + 1000 * 30),
             makerRelayerFee: BIG_ZERO,
             takerRelayerFee: BIG_ZERO,
