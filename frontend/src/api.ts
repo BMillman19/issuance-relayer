@@ -1,10 +1,8 @@
 import { BigNumber } from '0x.js';
-import { BACKEND_URL } from './constants';
+import { BACKEND_URL, BIG_E18 } from './constants';
 import { SignedIssuanceOrder } from 'setprotocol.js';
 
-import { getSetProtocolInstance } from './setProtocol';
-
-const setProtocol = getSetProtocolInstance();
+import { web3Wrapper } from './web3Wrapper';
 
 export const api = {
     getQuote: async (setAddress: string, quantity: BigNumber): Promise<{ totalCost: BigNumber; price: BigNumber }> => {
@@ -12,8 +10,8 @@ export const api = {
         const res = await fetch(url);
         const { totalCost, price } = await res.json();
         return {
-            totalCost: new BigNumber(totalCost),
-            price: new BigNumber(price),
+            totalCost: new BigNumber(totalCost).mul(BIG_E18).floor(),
+            price: new BigNumber(price).mul(BIG_E18).floor(),
         };
     },
     postMarketOrder: async (issuanceOrder: SignedIssuanceOrder, maxCost: BigNumber): Promise<{ txHash: string }> => {
@@ -28,8 +26,8 @@ export const api = {
                 max_cost: maxCost,
             }), // body data type must match "Content-Type" header
         });
-        const { txHash } = await res.json();
-        const txn = await setProtocol.awaitTransactionMinedAsync(txHash);
+        const resJson = await res.json();
+        const txn = await web3Wrapper.awaitTransactionMinedAsync(resJson.txHash);
         console.log(txn);
     },
 };

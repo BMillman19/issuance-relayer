@@ -17,8 +17,6 @@ export interface IssueSetPageState {
     errorMessage: string;
 }
 
-const setProtocol = getSetProtocolInstance();
-
 class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
     constructor(props) {
         super(props);
@@ -80,6 +78,8 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
         } = issuanceOrder;
         this.setState({ isLoading: true });
         try {
+            const setProtocol = getSetProtocolInstance();
+            // await setProtocol.setUnlimitedTransferProxyAllowanceAsync(makerToken, { from: makerAddress });
             const signedIssuanceOrder: SignedIssuanceOrder = await setProtocol.orders.createSignedOrderAsync(
                 setAddress,
                 quantity,
@@ -95,7 +95,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
                 takerRelayerFee,
                 salt,
             );
-            api.postMarketOrder(signedIssuanceOrder, new BigNumber(Infinity));
+            await api.postMarketOrder(signedIssuanceOrder, new BigNumber(Infinity));
         } catch (e) {
             console.log(e);
             this.setState({ errorMessage: e.message });

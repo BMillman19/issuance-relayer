@@ -16,7 +16,7 @@ import NumberInput from 'grommet/components/NumberInput';
 import { web3Wrapper } from './web3Wrapper';
 import { sets, setMap } from './data/sets';
 import { api } from './api';
-import { BIG_ZERO, WETH_KOVAN_ADDRESS, BIG_E18 } from './constants';
+import { BIG_ZERO, WETH_KOVAN_ADDRESS } from './constants';
 
 export interface IssuanceOrderFormState {
     quantity: BigNumber;
@@ -64,7 +64,7 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
                                 const bigQuantity = new BigNumber(quantity);
                                 this.setState({ quantity: bigQuantity });
                                 const { totalCost, price } = await api.getQuote(set.address, quantity);
-                                this.setState({ makerTokenAmount: totalCost.div(BIG_E18) });
+                                this.setState({ makerTokenAmount: totalCost });
                             }}
                         />
                     </FormField>
@@ -106,7 +106,7 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
             relayerAddress: SetProtocol.NULL_ADDRESS,
             relayerToken: SetProtocol.NULL_ADDRESS,
             quantity: quantity,
-            makerTokenAmount: makerTokenAmount.mul(BIG_E18),
+            makerTokenAmount: makerTokenAmount,
             expiration: new BigNumber(Date.now() + 1000 * 30),
             makerRelayerFee: BIG_ZERO,
             takerRelayerFee: BIG_ZERO,
