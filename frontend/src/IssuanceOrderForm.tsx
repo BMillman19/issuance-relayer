@@ -52,12 +52,13 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
                 <FormFields>
                     <FormField label="Quantity">
                         <NumberInput
-                            value={this.state.quantity.toNumber()}
+                            value={this.state.quantity ? this.state.quantity.toNumber() : null}
                             min={0}
                             step={+set.natural_units}
                             onChange={async (e: React.FormEvent<HTMLInputElement>) => {
                                 const quantity = (e.target as any).value;
                                 if (!quantity) {
+                                    this.setState({ quantity: null });
                                     return;
                                 }
                                 const bigQuantity = new BigNumber(quantity);
@@ -69,10 +70,16 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
                     </FormField>
                     <FormField label="WETH Token Amount">
                         <NumberInput
-                            value={this.state.makerTokenAmount.toNumber()}
+                            value={this.state.makerTokenAmount ? this.state.makerTokenAmount.toNumber() : null}
                             min={0}
+                            step={0.0000000001}
                             onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                this.setState({ makerTokenAmount: new BigNumber((e.target as any).value) });
+                                const value = (e.target as any).value;
+                                if (!value) {
+                                    this.setState({ makerTokenAmount: null });
+                                    return;
+                                }
+                                this.setState({ makerTokenAmount: new BigNumber(value) });
                             }}
                         />
                     </FormField>
