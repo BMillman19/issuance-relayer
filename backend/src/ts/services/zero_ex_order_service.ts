@@ -2,6 +2,7 @@ import { orderHashUtils, signatureUtils } from '@0xproject/order-utils';
 import { PrivateKeyWalletSubprovider, Provider, Web3ProviderEngine } from '@0xproject/subproviders';
 import { Order, SignedOrder, SignerType } from '@0xproject/types';
 import { BigNumber } from '@0xproject/utils';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import * as _ from 'lodash';
 
 import { constants } from '../constants';
@@ -35,8 +36,8 @@ export class ZeroExOrderService implements IZeroExOrderService {
             takerAddress: constants.NULL_ADDRESS,
             makerFee: constants.ZERO_AMOUNT,
             takerFee: constants.ZERO_AMOUNT,
-            makerAssetAmount: new BigNumber(100),
-            takerAssetAmount: new BigNumber(100),
+            makerAssetAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(195000), 18),
+            takerAssetAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1000), 18),
             makerAssetData: request.baseAssetData,
             takerAssetData: constants.KOVAN_WETH_TOKEN_ASSET_DATA,
             salt: new BigNumber(Date.now()),

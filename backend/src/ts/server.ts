@@ -141,7 +141,6 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
     const result = {
         txHash,
     };
-    // TODO: return tx hash
     res.status(200).send(JSON.stringify(result, null, 2));
 });
 const DEFAULT_PORT = 8080;
