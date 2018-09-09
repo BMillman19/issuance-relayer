@@ -125,11 +125,11 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
         issuanceOrder.requiredComponentAmounts,
         issuanceOrder.quantity,
     );
-    const maxCost = req.body.max_cost ? new BigNumber(req.body.max_cost) : 0;
+    const maxCost = req.body.max_cost ? new BigNumber(req.body.max_cost) : Infinity;
     const totalCost = getCostForOrders(targetOrdersArray);
-    if (totalCost.greaterThan(maxCost)) {
-        throw new Error('Max cost exceeded');
-    }
+    // if (totalCost.greaterThan(maxCost)) {
+    //     throw new Error('Max cost exceeded');
+    // }
     const flattenedOrders = _.flatten(_.map(targetOrdersArray, targetOrders => targetOrders.resultOrders));
     const zeroExSignedFillOrders = _.map(flattenedOrders, order => ({
         ...order,

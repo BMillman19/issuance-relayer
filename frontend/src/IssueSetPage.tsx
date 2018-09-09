@@ -9,6 +9,8 @@ import Distribution from 'grommet/components/Distribution';
 import IssuanceOrderForm from './IssuanceOrderForm';
 import { getSetProtocolInstance } from './setProtocol';
 import { setMap } from './data/sets';
+import { api } from './api';
+import { BigNumber } from '0x.js';
 
 export interface IssueSetPageState {
     isLoading: boolean;
@@ -93,7 +95,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
                 takerRelayerFee,
                 salt,
             );
-            // TODO: Send SignedIssuanceOrder
+            api.postMarketOrder(signedIssuanceOrder, new BigNumber(Infinity));
         } catch (e) {
             console.log(e);
             this.setState({ errorMessage: e.message });
