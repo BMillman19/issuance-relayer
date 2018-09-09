@@ -16,8 +16,23 @@ import SetSelectionPage from './SetSelectionPage';
 import IssueSetPage from './IssueSetPage';
 import Logo from './Logo';
 import OTCApp from './OTCApp';
+import { NETWORK_ID_KOVAN } from './constants';
+import { web3Wrapper } from './web3Wrapper';
+import ToastErrorBoundary from './ToastErrorBoundary';
 
-class App extends React.Component {
+export interface AppProps {}
+export interface AppState {}
+
+class App extends React.Component<AppProps, AppState> {
+    // public componentDidMount(): void {
+    //     this.throwOnWrongNetwork();
+    // }
+    // throwOnWrongNetwork = async () => {
+    //     const networkId = await web3Wrapper.getNetworkIdAsync();
+    //     if (networkId !== NETWORK_ID_KOVAN) {
+    //         throw new Error('Please switch to Kovan');
+    //     }
+    // };
     public render() {
         return (
             <BrowserRouter>
