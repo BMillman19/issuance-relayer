@@ -57,7 +57,11 @@ class IssuanceOrderForm extends React.Component<IssuanceOrderFormProps, Issuance
                             step={+set.natural_units}
                             onChange={async (e: React.FormEvent<HTMLInputElement>) => {
                                 const quantity = (e.target as any).value;
-                                this.setState({ quantity: new BigNumber(quantity) });
+                                if (!quantity) {
+                                    return;
+                                }
+                                const bigQuantity = new BigNumber(quantity);
+                                this.setState({ quantity: bigQuantity });
                                 const { totalCost, price } = await api.getQuote(set.address, quantity);
                                 this.setState({ makerTokenAmount: totalCost.div(BIG_E18) });
                             }}
