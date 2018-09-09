@@ -125,8 +125,9 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
         issuanceOrder.requiredComponentAmounts,
         issuanceOrder.quantity,
     );
+    const maxCost = req.body.max_cost ? new BigNumber(req.body.max_cost) : 0;
     const totalCost = getCostForOrders(targetOrdersArray);
-    if (totalCost.greaterThan(req.body.max_cost)) {
+    if (totalCost.greaterThan(maxCost)) {
         throw new Error('Max cost exceeded');
     }
     const flattenedOrders = _.flatten(_.map(targetOrdersArray, targetOrders => targetOrders.resultOrders));
@@ -135,9 +136,14 @@ app.post('/market_order', async (req: express.Request, res: express.Response) =>
         takerTokenAmount: order.makerAssetAmount,
         takerTokenAddress: assetDataUtils.decodeERC20AssetData(order.makerAssetData).tokenAddress,
     }));
-    const txHash = setProtocol.orders.fillOrderAsync(issuanceOrder, issuanceOrder.quantity, zeroExSignedFillOrders, {
-        from: PUBLIC_ADDRESS,
-    });
+    const txHash = await setProtocol.orders.fillOrderAsync(
+        issuanceOrder,
+        issuanceOrder.quantity,
+        zeroExSignedFillOrders,
+        {
+            from: PUBLIC_ADDRESS,
+        },
+    );
     const result = {
         txHash,
     };
