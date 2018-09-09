@@ -14,6 +14,7 @@ import Title from 'grommet/components/Title';
 
 import SetSelectionPage from './SetSelectionPage';
 import IssueSetPage from './IssueSetPage';
+import Logo from './Logo';
 import OTCApp from './OTCApp';
 
 class App extends React.Component {
@@ -23,7 +24,9 @@ class App extends React.Component {
                 <Layout>
                     <Header fixed={false} float={false} size="large" splash={false}>
                         <Title>
-                            <Link to="/">Issuance Relayer </Link>
+                            <Link to="/">
+                                <Logo />
+                            </Link>
                         </Title>
                         <Box flex={true} justify="end" direction="row" responsive={false}>
                             <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
@@ -47,7 +50,7 @@ class App extends React.Component {
                     <Footer justify="between">
                         <Title />
                         <Box direction="row" align="center" pad={{ between: 'medium' }}>
-                            <Paragraph margin="none">© 2018 0x Project</Paragraph>
+                            <Paragraph margin="none">© 2018 Bündler</Paragraph>
                             <Menu direction="row" size="small" dropAlign={{ right: 'right' }}>
                                 <Anchor href="#">About</Anchor>
                                 <Anchor href="#">FAQ</Anchor>
