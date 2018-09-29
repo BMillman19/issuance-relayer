@@ -47,10 +47,13 @@ class App extends React.Component<AppProps, AppState> {
                             <Box flex={true} justify="end" direction="row" responsive={false}>
                                 <Menu icon={<Actions />} dropAlign={{ right: 'right' }}>
                                     <Anchor>
-                                        <Link to="orders">See Your Orders</Link>
+                                        <Link to="/create">Create A Set</Link>
                                     </Anchor>
                                     <Anchor>
-                                        <Link to="orderbook">See All Orders</Link>
+                                        <Link to="/orders">See Your Orders</Link>
+                                    </Anchor>
+                                    <Anchor>
+                                        <Link to="/orderbook">See All Orders</Link>
                                     </Anchor>
                                     <Anchor>
                                         <Link to="/">See Token Sets</Link>
@@ -62,6 +65,7 @@ class App extends React.Component<AppProps, AppState> {
                             <Route exact={true} path="/" component={SetSelectionPage} />
                             <Route path="/issue/:setId" component={IssueSetPage} />
                             <Route path="/otc" component={OTCApp} />
+                            <Route path="/create" component={OTCApp} />
                         </Section>
                         <Footer justify="between">
                             <Title />
