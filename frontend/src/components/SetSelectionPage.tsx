@@ -6,7 +6,8 @@ import Box from 'grommet/components/Box';
 import Card from 'grommet/components/Card';
 import Tile from 'grommet/components/Tile';
 import Tiles from 'grommet/components/Tiles';
-import { sets } from './data/sets';
+
+import { sets } from '../constants/sets';
 
 class SetSelectionPage extends React.Component {
     public render(): React.ReactNode {

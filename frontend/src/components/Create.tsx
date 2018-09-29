@@ -7,17 +7,17 @@ import Notification from 'grommet/components/Notification';
 import Distribution from 'grommet/components/Distribution';
 
 import IssuanceOrderForm from './IssuanceOrderForm';
-import { getSetProtocolInstance } from './setProtocol';
-import { setMap } from './data/sets';
-import { api } from './api';
+import { getSetProtocolInstance } from '../utils/setProtocol';
+import { setMap } from '../constants/sets';
+import { api } from '../utils/api';
 import { BigNumber } from '0x.js';
 
-export interface IssueSetPageState {
+export interface CreateSetPageState {
     isLoading: boolean;
     errorMessage: string;
 }
 
-class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
+class CreateSetPage extends React.Component<RouteProps, CreateSetPageState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,6 +25,7 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
             errorMessage: '',
         };
     }
+
     public render(): React.ReactNode {
         const setId = this.props.match.params.setId;
         const set = setMap[setId];
@@ -105,4 +106,4 @@ class IssueSetPage extends React.Component<RouteProps, IssueSetPageState> {
     };
 }
 
-export default IssueSetPage;
+export default CreateSetPage;

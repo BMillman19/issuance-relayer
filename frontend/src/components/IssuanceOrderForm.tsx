@@ -13,10 +13,10 @@ import Button from 'grommet/components/Button';
 import Select from 'grommet/components/Select';
 import NumberInput from 'grommet/components/NumberInput';
 
-import { web3Wrapper } from './web3Wrapper';
-import { sets, setMap } from './data/sets';
-import { api } from './api';
-import { BIG_ZERO, WETH_KOVAN_ADDRESS } from './constants';
+import { web3Wrapper } from '../utils/web3Wrapper';
+import { api } from '../utils/api';
+import { BIG_ZERO, WETH_KOVAN_ADDRESS } from '../constants';
+import { sets, setMap } from '../constants/sets';
 
 export interface IssuanceOrderFormState {
     quantity: BigNumber;
