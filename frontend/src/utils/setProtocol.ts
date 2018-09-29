@@ -1,7 +1,7 @@
 import SetProtocol from 'setprotocol.js';
 import * as Web3 from 'web3';
 
-import { getProvider } from './provider';
+import { getProvider } from './getProvider';
 
 // Kovan Config
 const config = {

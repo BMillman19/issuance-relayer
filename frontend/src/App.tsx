@@ -12,13 +12,13 @@ import Paragraph from 'grommet/components/Paragraph';
 import Section from 'grommet/components/Section';
 import Title from 'grommet/components/Title';
 
-import SetSelectionPage from './SetSelectionPage';
-import IssueSetPage from './IssueSetPage';
-import Logo from './Logo';
-import OTCApp from './OTCApp';
+import SetSelectionPage from './components/SetSelectionPage';
+import IssueSetPage from './components/IssueSetPage';
+import Logo from './components/Logo';
+import OTCApp from './components/OTCApp';
+import { web3Wrapper } from './components/web3Wrapper';
+import ToastErrorBoundary from './components/ToastErrorBoundary';
 import { NETWORK_ID_KOVAN } from './constants';
-import { web3Wrapper } from './web3Wrapper';
-import ToastErrorBoundary from './ToastErrorBoundary';
 
 export interface AppProps {}
 export interface AppState {}

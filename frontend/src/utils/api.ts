@@ -1,8 +1,8 @@
 import { BigNumber } from '0x.js';
-import { BACKEND_URL, BIG_E18 } from './constants';
 import { SignedIssuanceOrder } from 'setprotocol.js';
 
 import { web3Wrapper } from './web3Wrapper';
+import { BACKEND_URL, BIG_E18 } from '../constants';
 
 export const api = {
     getQuote: async (setAddress: string, quantity: BigNumber): Promise<{ totalCost: BigNumber; price: BigNumber }> => {
